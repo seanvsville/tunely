@@ -47,8 +47,15 @@ $(document).ready(function() {
     });
   });
 
-//$(this).serialize()
-// End of document ready
+$("#albums").on('click', '.add-song', function(e) {
+  console.log('add-song clicked');
+  var id= $(this).closest('.album').data('album-id');
+  $('#songModal').data('album-id', id);
+  $('#songModal').modal();
+  console.log('id',id);
+});
+
+// End of document readyßßß
 });
 
 // this function takes a single album and renders it to the page
