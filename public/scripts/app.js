@@ -25,14 +25,28 @@ $(document).ready(function() {
     error: newFormError
   });
 
-  $.ajax({
-    method: 'POST',
-    url: '/api/albums',
-    data: $(this).serialize(),
-    success: newAlbumSuccess,
-    error: newAlbumError
+  $('#album-form form').on('submit', function(e) {
+    e.preventDefault();
+    var newAlbumName = $('#name').val();
+    var newArtistName = $('#textinput').val();
+    var newReleaseDate = $('#releaseDate').val();
+    var genreString = $('#genres').val();
+    var newGenres = genreString.split(",");
+    $.ajax({
+      method: 'POST',
+      url: '/api/albums',
+      data: {
+        name: newAlbumName,
+        artistName: newArtistName,
+        releaseDate: newReleaseDate,
+        genres: newGenres,
+      },
+      success: newAlbumSuccess,
+      error: newAlbumError
+    });
   });
 
+//$(this).serialize()
 // End of document ready
 });
 
