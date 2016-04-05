@@ -5,8 +5,6 @@
  *
  */
 
- var allAlbums = [];
-
 $(document).ready(function() {
   console.log('app.js loaded!');
 
@@ -47,25 +45,29 @@ $(document).ready(function() {
     });
   });
 
-$("#albums").on('click', '.add-song', function(e) {
-  console.log('add-song clicked');
-  var id= $(this).closest('.album').data('album-id');
-  $('#songModal').data('album-id', id);
-  $('#songModal').modal();
-  console.log('id',id);
-});
+// event listener for add song button to open modal
+  $("#albums").on('click', '.add-song', function(e) {
+    console.log('add-song clicked');
+    var albumId= $(this).closest('.album').data('album-id');
+    $('#songModal').data('album-id', albumId);
+    $('#songModal').modal();
+    console.log('album-id', albumId);
+  });
 
-// End of document readyßßß
+// event listener for save song modal save button
+$('#saveSong').on('click', handleNewSongSubmit);
+
+// End of document ready
 });
 
 // this function takes a single album and renders it to the page
-function renderAlbum(album) {
-  console.log('rendering album:', album);
-  var albumHtml = $('#album-template').html();
-  var albumsTemplate = Handlebars.compile(albumHtml);
-  var html = albumsTemplate(album);
-  $('#albums').prepend(html);
-}
+  function renderAlbum(album) {
+    console.log('rendering album:', album);
+    var albumHtml = $('#album-template').html();
+    var albumsTemplate = Handlebars.compile(albumHtml);
+    var html = albumsTemplate(album);
+    $('#albums').prepend(html);
+  }
 
   function getAlbumsSuccess(json){
     json.forEach(function(album){
@@ -92,4 +94,37 @@ function renderAlbum(album) {
 
   function newAlbumError(json){
     console.log('awww-mann something went wrong!');
+  }
+
+  var thisAlbumId = $('#songModal').data('album-id');
+
+  function handleNewSongSubmit(e) {
+    e.preventDefault();
+    var newSongName = $('#songName').val();
+    var newTrackNumber = $('#trackNumber').val();
+    console.log("You added this new song", newSongName);
+      $.ajax({
+        method: 'POST',
+        url: '/api/albums/' + thisAlbumId + '/songs',
+        data: {
+          songName: newSongName,
+          trackNumber: newTrackNumber,
+        },
+        success: newSongSuccess,
+        error: newSongError
+      });
+  }
+
+  function newSongSuccess(json){
+    $('#songName').val('');
+    $('#trackNumber').val('');
+    $('#songModal').modal('hide');
+    app.get('/api/albums' + thisAlbumId, function(data) {
+      $('[data-album-id=' + thisAlbumId + ']').remove();
+      });
+    renderAlbum(data);
+    }
+
+  function newSongError(json){
+    console.log('awww-wth? something went wrong!', json);
   }
