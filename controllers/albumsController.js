@@ -13,14 +13,16 @@ function index(req, res) {
 }
 
 function create(req, res) {
+  console.log("what is my input", req.body);
     var newAlbum = new db.Album({
       artistName: req.body.artistName,
       name: req.body.name,
       releaseDate: req.body.releaseDate,
-      genre: req.body.genre,
+      genres: req.body.genres,
     });
 
   // save newAlbum to database
+  console.log("this is the new album", newAlbum);
   newAlbum.save(function(err, album) {
     if (err) {return console.log('save error: ' + err);}
     console.log('saved ', album.name);

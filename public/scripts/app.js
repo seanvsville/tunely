@@ -31,7 +31,8 @@ $(document).ready(function() {
     var newArtistName = $('#textinput').val();
     var newReleaseDate = $('#releaseDate').val();
     var genreString = $('#genres').val();
-    var newGenres = genreString.split(",");
+    var newGenres = genreString.split(" , ");
+    console.log("Check this out", newGenres);
     $.ajax({
       method: 'POST',
       url: '/api/albums',
@@ -79,9 +80,7 @@ function renderAlbum(album) {
   }
 
   function newAlbumSuccess(json){
-    $('#album-form').val('');
-    allAlbums.push(json);
-    renderAlbum();
+    renderAlbum(json);
   }
 
   function newAlbumError(json){
